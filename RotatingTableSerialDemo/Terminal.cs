@@ -38,7 +38,10 @@ namespace RotatingTableSerialDemo
                         return;
 
                     var response = await SendCommandAndGetResponseAsync(command);
-                    WriteYellowLine(response);
+                    var color = ConsoleColor.Yellow;
+                    if (response == "ERR")
+                        color = ConsoleColor.Red;
+                    WriteLine(response, color);
 
                     if (command.StartsWith("FM ") && response == "OK")
                     {
@@ -59,9 +62,9 @@ namespace RotatingTableSerialDemo
             }
         }
 
-        private static void WriteYellowLine(string response, params object[] arg)
+        private static void WriteLine(string response, ConsoleColor color = ConsoleColor.Yellow, params object[] arg)
         {
-            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.ForegroundColor = color;
             Console.WriteLine(response, arg);
             Console.ForegroundColor = ConsoleColor.White;
         }
@@ -96,7 +99,7 @@ namespace RotatingTableSerialDemo
             Console.WriteLine("Available Ports:");
             foreach (string s in SerialPort.GetPortNames())
             {
-                WriteYellowLine("   {0}", s);
+                WriteLine("   {0}", ConsoleColor.Yellow, s);
             }
 
             Console.Write("Enter COM port value (Default: {0}): ", defaultPortName);
@@ -113,12 +116,12 @@ namespace RotatingTableSerialDemo
         private static void PrintAvailableCommands()
         {
             Console.WriteLine("Available commands:");
-            WriteYellowLine("   STATUS");
-            WriteYellowLine("   SET ACC X");
-            WriteYellowLine("   GET ACC");
-            WriteYellowLine("   FM X");
-            WriteYellowLine("   STOP");
-            WriteYellowLine("   SOFTSTOP");
+            WriteLine("   STATUS");
+            WriteLine("   SET ACC X");
+            WriteLine("   GET ACC");
+            WriteLine("   FM X");
+            WriteLine("   STOP");
+            WriteLine("   SOFTSTOP");
         }
 
         private async Task<string> SendCommandAndGetResponseAsync(string command)
@@ -207,6 +210,10 @@ namespace RotatingTableSerialDemo
                 System.Diagnostics.Debug.WriteLine(args.Token);
                 _listener.DataReceived -= RotateHandler;
                 _listeningTimer.Stop();
+            }
+            else if (args.Token == "MOVERR")
+            {
+                WriteLine(args.Token, ConsoleColor.Red);
             }
         }
     }
