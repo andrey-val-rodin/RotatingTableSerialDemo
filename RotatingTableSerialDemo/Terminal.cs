@@ -18,7 +18,7 @@ namespace RotatingTableSerialDemo
             _listeningTimer.Elapsed += (s, e) =>
             {
                 // This message may appear after a sudden power outage of the table during rotation
-                Console.WriteLine("Table stopped sending messages in the process of rotation");
+                Console.WriteLine("Table stopped sending messages during rotation");
             };
         }
 
@@ -34,7 +34,7 @@ namespace RotatingTableSerialDemo
                 while (true)
                 {
                     var command = Console.ReadLine();
-                    if (string.IsNullOrEmpty(command))
+                    if (string.IsNullOrWhiteSpace(command))
                         return;
 
                     var response = await SendCommandAndGetResponseAsync(command);
